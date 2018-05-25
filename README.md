@@ -1,7 +1,21 @@
 # web-temp-esp
 
+### Package Description
 
-Web links
+ESP2566 based thermometer with Web integration
+
+### Supported platforms
+- ESP2566 nodemcu build 1.5.4
+- DHT22 sensor
+- SSD1306 screen
+- HC-05 Bluetooth module
+
+### Detailed features list
+- Measure temperature and humidity and show on a screen
+- Report measured results to a web server (need WiFi internet connection)
+- Provides a measured results page which is accessible directly
+
+### Web links
 
 https://github.com/javieryanez/nodemcu-modules/tree/master/dht22
 
