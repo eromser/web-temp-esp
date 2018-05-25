@@ -1,0 +1,9 @@
+SSID="<SSID>"
+WIFI_PASSWORD="<PASSWORD>"
+DISP_SDA = 2 -- SD1306 SDA Pin
+DISP_SCL = 1 -- SD1306 SCL Pin
+BUTTON_PIN =  3  -- Button Pin
+PIN = 4 --  DHT22 Sensor Data Pin, D4
+NTP_SERVER = "pool.ntp.org"
+REPORT_SERVER = "xxx.yyy"
+HASH_SECRET="<Some secret string>"

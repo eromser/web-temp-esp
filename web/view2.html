@@ -1,0 +1,76 @@
+<html>
+  <head>
+    <!--Load the AJAX API-->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script type="text/javascript">
+    
+    // Load the Visualization API and the piechart package.
+    google.charts.load('current', {'packages':['corechart']});
+      
+    // Set a callback to run when the Google Visualization API is loaded.
+    google.charts.setOnLoadCallback(drawChart);
+      
+    function drawChart() {
+      var jsonData = $.ajax({
+          url: "getData2.php",
+          dataType: "json",
+          async: false
+          }).responseText;
+          
+      // Create our data table out of JSON data loaded from server.
+      var data = new google.visualization.DataTable(jsonData);
+      
+      var options = {
+        title: 'Sensor Data (Beta)',
+        legend: { position: 'bottom' },
+	width: 800,
+	hAxis: {direction: -1},
+	height: 320,
+        // Gives each series an axis that matches the vAxes number below.
+        series: {
+          0: {targetAxisIndex: 0},
+          1: {targetAxisIndex: 1}
+        },
+        vAxes: {
+          // Adds titles to each axis.
+          0: {title: 'Temps (Celsius)'},
+          1: {title: 'Humidity'}
+	}
+      };
+
+      // Instantiate and draw our chart, passing in some options.
+      var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+      chart.draw(data, options);
+      banner = new String();
+      banner = banner.concat('<font size="7" face="arial, helvetica" color="#0000ff">Measured at: ', data.getValue(0, 0));
+      banner = banner.concat('<br/>Temperature: ', data.getValue(0, 1) ," &deg;C</font>");
+
+      document.getElementById('cur_div').innerHTML = banner;
+      document.getElementById('cur_div').innerHTML = banner;
+
+    }
+
+    </script>
+  </head>
+
+  <body>
+	<table>
+	<tr>
+	  <td>
+	    <a href="http://www.wunderground.com/weatherstation/WXDailyHistory.asp?ID=IMOSKVA795"><img src="http://banners.wunderground.com/cgi-bin/banner/ban/wxBanner?bannertype=pws250_metric&weatherstationcount=IMOSKVA795" width="250" height="150" border="0" alt="Weather Underground PWS IMOSKVA795" /></a>
+	  </td>
+          <td>
+  	    <!--Div that will hold the text-->
+            <div id="cur_div"></div>
+	  </td>
+        </tr>
+	<tr>
+	  <td colspan=2 >
+  	    <!--Div that will hold the line chart-->
+            <div id="chart_div"></div>
+	  </td>
+	</tr>
+	</table>
+  </body>
+</html>
