@@ -1,7 +1,5 @@
 dofile("settings.lua")
 
--- static IP setup from http://www.domoticz.com/wiki/ESP8266_WiFi_module
-
 
 --INIT UART 38400
 uart.setup(0, 38400, 8, uart.PARITY_NONE, uart.STOPBITS_1, 1)
@@ -88,31 +86,32 @@ gpio.trig(BUTTON_PIN, "down", function(level)
     disp:sleepOn()
    end)
  end)
-
 wifi.setmode(wifi.STATION)
-wifi.sta.config(SSID,WIFI_PASSWORD)
-wifi.sta.connect()
-tmr.alarm(1, 1000, 1, function()
-     if wifi.sta.getip() == nil then
-        print("Connecting...")
-     else
-        tmr.stop(1)
-        print("Connected, IP is "..wifi.sta.getip())
-        print("ESP8266 WiFi mode is: " .. wifi.getmode())
-        print("The module MAC address is: " .. wifi.ap.getmac())
-    
-	sntp.sync(NTP_SERVER,
-          function(sec,usec,server)
-            sec,usec = rtctime.get()
-            sec = 3*60*60+sec
-            tm = rtctime.epoch2cal(unpack{sec, usec})
-            print(string.format("%04d/%02d/%02d %02d:%02d:%02d", tm["year"], tm["mon"], tm["day"], tm["hour"], tm["min"], tm["sec"]))
-          end,
-          function()
-	    print('NTP sync failed!')
-	  end)
 
--- Web Server START --
+station_cfg={}
+station_cfg.ssid=SSID
+station_cfg.pwd=WIFI_PASSWORD
+station_cfg.save=false
+station_cfg.got_ip_cb = function ()
+     print("Connected, IP is "..wifi.sta.getip())
+     print("ESP8266 WiFi mode is: " .. wifi.getmode())
+     print("The module MAC address is: " .. wifi.ap.getmac())
+
+  tmr.alarm(1, 1000, tmr.ALARM_SINGLE, function()
+        sntp.sync(NTP_SERVER,
+              function(sec,usec,server)
+                sec,usec = rtctime.get()
+                sec = 3*60*60+sec
+                tm = rtctime.epoch2cal(unpack{sec, usec})
+                print(string.format("%04d/%02d/%02d %02d:%02d:%02d", tm["year"], tm["mon"], tm["day"], tm["hour"], tm["min"], tm["sec"]))
+              end,
+              function(i, s)
+                print('NTP sync failed!. Int: ', i, '; Str', s)
+              end
+              )
+   end)
+        
+
         srv=net.createServer(net.TCP, 4)
         print("Server created on " .. wifi.sta.getip())
         srv:listen(80,function(conn)
@@ -120,10 +119,12 @@ tmr.alarm(1, 1000, 1, function()
                 print(request)
                 
                 status, t, h, temp_dec, humi_dec = dht.read(PIN)
+                local response = {}
                 
                 if string.match(request, "machine") then
                     if status == dht.OK then 
-                        conn:send("\"Temperature\": \""..t.."\", \"Humidity\": \""..h.."\"")
+                        --print( "DHT is Good." )
+                        response[#response + 1] = "HTTP/1.0 200 Ok\r\n\r\n\"Temperature\": \""..t.."\", \"Humidity\": \""..h.."\""
                     elseif status == dht.ERROR_CHECKSUM then
                         print( "DHT Checksum error." )
                     elseif status == dht.ERROR_TIMEOUT then
@@ -131,7 +132,6 @@ tmr.alarm(1, 1000, 1, function()
                     end 
    
                 else
-                  local response = {}
 
                   if nil == string.match(request, "/favicon.ico") then
                         response[#response + 1] = "HTTP/1.0 200 Ok\r\n\r\n"
@@ -167,7 +167,9 @@ tmr.alarm(1, 1000, 1, function()
  
                   else
                     response = {"HTTP/1.0 404 Not found\r\n\r\n"}
+
                   end
+                end
                     -- sends and removes the first element from the 'response' table
                     local function send(sk)
                           if #response > 0
@@ -181,15 +183,13 @@ tmr.alarm(1, 1000, 1, function()
                     conn:on("sent", send)
                     
                     send(conn)
-                end
             end)
         end)
---Web Server END --
-        -- set up some DHT22 things from https://github.com/javieryanez/nodemcu-modules/tree/master/dht22
 
         chipserial = node.chipid()
 
         tmr.alarm(  2, 900000, tmr.ALARM_AUTO, function()         
+        --tmr.alarm(  2, 30000, tmr.ALARM_AUTO, function()
         status, t, h, temp_dec, humi_dec = dht.read(PIN)
         if status == dht.OK then
             heap = node.heap()   
@@ -198,7 +198,7 @@ tmr.alarm(1, 1000, 1, function()
             to_send = to_send .. "&hash=" .. sha_hash
             print(to_send .. "\r\n")
     
-            conn=net.createConnection(net.TCP, false)
+            conn=net.createConnection(net.TCP, 0)
             conn:on("receive", function(conn, payload) print(payload) end )
             conn:connect(80,REPORT_SERVER)
             conn:on("connection", function(sck, c)
@@ -216,5 +216,8 @@ tmr.alarm(1, 1000, 1, function()
         end
         --conn.close()
         end)
-   end
-end)
+end
+
+wifi.sta.config(station_cfg)
+
+wifi.sta.connect()
