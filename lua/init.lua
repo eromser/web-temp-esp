@@ -100,7 +100,7 @@ station_cfg.got_ip_cb = function ()
   tmr.alarm(1, 1000, tmr.ALARM_SINGLE, function()
         sntp.sync(NTP_SERVER,
               function(sec,usec,server)
-                sec,usec = rtctime.get()
+		rtctime.set(sec,usec)
                 sec = 3*60*60+sec
                 tm = rtctime.epoch2cal(unpack{sec, usec})
                 print(string.format("%04d/%02d/%02d %02d:%02d:%02d", tm["year"], tm["mon"], tm["day"], tm["hour"], tm["min"], tm["sec"]))

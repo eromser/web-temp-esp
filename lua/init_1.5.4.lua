@@ -103,7 +103,7 @@ wifi.sta.connect( function()
         
     	sntp.sync(NTP_SERVER,
               function(sec,usec,server)
-                sec,usec = rtctime.get()
+                --sec,usec = rtctime.get()
                 sec = 3*60*60+sec
                 tm = rtctime.epoch2cal(unpack{sec, usec})
                 print(string.format("%04d/%02d/%02d %02d:%02d:%02d", tm["year"], tm["mon"], tm["day"], tm["hour"], tm["min"], tm["sec"]))
