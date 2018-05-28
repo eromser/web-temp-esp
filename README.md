@@ -2,10 +2,10 @@
 
 ### Package Description
 
-ESP2566 based thermometer with Web integration
+ESP8266 based thermometer with Web integration
 
 ### Supported platforms
-- ESP2566 nodemcu build 1.5.4 and 2.1
+- ESP8266 nodemcu build 1.5.4 and 2.1
 - DHT22 sensor
 - SSD1306 screen
 - HC-05 Bluetooth module
