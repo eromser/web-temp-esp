@@ -1,5 +1,6 @@
 <html>
   <head>
+    <meta http-equiv="refresh" content="300">
     <!--Load the AJAX API-->
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
@@ -19,7 +20,13 @@
           }).responseText;
           
       // Create our data table out of JSON data loaded from server.
-      var data = new google.visualization.DataTable(jsonData);
+     // google.visualization.Query("getData2.php").send(function(a){jsonData = a.getDataTable()});
+      var data = new google.visualization.DataTable(jsonData, 0.6);
+
+      var view1 = new google.visualization.DataView(data);
+      view1.hideColumns([3]);
+      var view2 = new google.visualization.DataView(data);
+      view2.hideColumns([1,2]);
       
       var options = {
         title: 'Sensor Data (Beta)',
@@ -41,13 +48,32 @@
 
       // Instantiate and draw our chart, passing in some options.
       var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
-      chart.draw(data, options);
+      chart.draw(view1, options);
       banner = new String();
       banner = banner.concat('<font size="7" face="arial, helvetica" color="#0000ff">Measured at: ', data.getValue(0, 0));
       banner = banner.concat('<br/>Temperature: ', data.getValue(0, 1) ," &deg;C</font>");
 
       document.getElementById('cur_div').innerHTML = banner;
       document.getElementById('cur_div').innerHTML = banner;
+
+	// Heap trend
+      options = {
+        title: 'Heap',
+        legend: { position: 'bottom' },
+	width: 800,
+	hAxis: {direction: -1},
+	height: 320,
+        // Gives each series an axis that matches the vAxes number below.
+        series: {
+          2: {targetAxisIndex: 0},
+        },
+        vAxes: {
+          // Adds titles to each axis.
+          0: {title: 'Heap'},
+	}
+      };
+      var chart2 = new google.visualization.LineChart(document.getElementById('heap_chart_div'));
+      chart2.draw(view2, options);
 
     }
 
@@ -69,6 +95,12 @@
 	  <td colspan=2 >
   	    <!--Div that will hold the line chart-->
             <div id="chart_div"></div>
+	  </td>
+	</tr>
+	<tr>
+	  <td colspan=2 >
+  	    <!--Div that will hold the line chart-->
+            <div id="heap_chart_div"></div>
 	  </td>
 	</tr>
 	</table>
