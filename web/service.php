@@ -19,7 +19,7 @@
   $humi  = $out['humi'];
   $pin  = $out['pin'];
 
-  if (!is_numeric($heap) or !is_numeric($temp) or !is_numeric($humi) or !is_numeric($chipid) or !is_numeric($pin)) {
+  if (!is_numeric($heap) || !is_numeric($temp) || !is_numeric($humi) || !is_numeric($chipid) || !is_numeric($pin)) {
     die("Wrong data" );
   }
 

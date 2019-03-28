@@ -33,7 +33,6 @@ $conn->close();
 
 
 // Create a blank image and add some text
-//$font = 'cour.ttf';
 $font = 'Inconsolata-Regular.ttf';
 $im = imagecreatetruecolor(600, 400);
 $text_color = imagecolorallocate($im, 233, 14, 91);
@@ -42,7 +41,6 @@ $grey = imagecolorallocate($im, 128, 128, 128);
 $black = imagecolorallocate($im, 0, 0, 0);
 
 imagefilledrectangle($im, 0, 0, 799, 599, $white);
-//imagestring($im, 120, 5, 5,  $string, $text_color);
 imagettftext($im, 40, 0, 20, 100, $black, $font, $time);
 imagettftext($im, 40, 0, 20, 200, $black, $font, $temp);
 
