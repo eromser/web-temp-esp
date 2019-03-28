@@ -3,7 +3,7 @@ sudo: false
 
 addons:
   sonarcloud:
-    organization: "eromser_web-temp-esp"
+    organization: "eromser-github"
 
 git:
   depth: false
