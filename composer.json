@@ -1,0 +1,12 @@
+our composer.json should look similar to this:
+
+{
+    "autoload": {
+        "classmap": [
+            "web/"
+        ]
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8"
+    }
+}

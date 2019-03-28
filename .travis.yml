@@ -1,6 +1,10 @@
 language: php
 sudo: false
 
+cache:
+  directories:
+    - $HOME/.composer/cache
+
 addons:
   sonarcloud:
     organization: "eromser-github"
@@ -8,6 +12,8 @@ addons:
 git:
   depth: false
 
+install: composer update --no-interaction --no-suggest --no-progress
+
 script:
-#  - vendor/bin/phpunit -c phpunit.xml.dist --coverage-clover=coverage-report.clover --log-junit=test-report.xml
+  - vendor/bin/phpunit -c phpunit.xml.dist --coverage-clover=coverage-report.clover --log-junit=test-report.xml
   - sonar-scanner
