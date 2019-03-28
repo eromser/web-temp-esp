@@ -1,5 +1,3 @@
-our composer.json should look similar to this:
-
 {
     "autoload": {
         "classmap": [
