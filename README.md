@@ -1,5 +1,11 @@
 # web-temp-esp
 
+[![Build Status](https://travis-ci.com/eromser/web-temp-esp.svg?branch=master)](https://travis-ci.com/eromser/web-temp-esp)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=eromser_web-temp-esp&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=eromser_web-temp-esp)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=eromser_web-temp-esp&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=eromser_web-temp-esp)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=eromser_web-temp-esp&metric=coverage)](https://sonarcloud.io/dashboard?id=eromser_web-temp-esp)
+
+
 ### Package Description
 
 ESP8266 based thermometer with Web integration
