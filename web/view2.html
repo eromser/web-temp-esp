@@ -1,14 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <link rel="manifest" href="manifest.json">
+    <title>Temp measurements</title>
+    <meta name="Description" content="Temperature and humidity measurements with DHT22/ESP8266.">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="refresh" content="300">
+    <meta name="theme-color" content="#d36060"/>
+	<link rel="icon" type="image/png" sizes="192x192"  href="Icon-192px.png">
+	<link rel="icon" type="image/png" sizes="512x512"  href="Icon-512px.png">
+    <link rel="manifest" href="manifest.json">
     <!--Load the AJAX API-->
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <!--script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script-->
-    <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-    <!--script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script-->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 
     <script type="text/javascript">
     
@@ -19,67 +21,73 @@
     google.charts.setOnLoadCallback(drawChart);
       
     function drawChart() {
-      var jsonData = $.ajax("getData2.php",{
-          dataType: "json",
-          async: false
-          }).responseText;
+	  $.ajax({
+		async: true,
+		type: "GET",
+		url: "getData2.php",
+		contentType: "application/json; charset=utf-8",
+		dataType: "json",
+		success: function (response) {
+			 // Create our data table out of JSON data loaded from server.
+			 // google.visualization.Query("getData2.php").send(function(a){jsonData = a.getDataTable()});
+			  var data = new google.visualization.DataTable(response, 0.6);
+
+			  var view1 = new google.visualization.DataView(data);
+			  view1.hideColumns([3]);
+			  var view2 = new google.visualization.DataView(data);
+			  view2.hideColumns([1,2]);
+			  
+			  var options = {
+				title: 'Sensor Data (Beta)',
+				legend: { position: 'bottom' },
+			width: 800,
+			hAxis: {direction: -1},
+			height: 320,
+				// Gives each series an axis that matches the vAxes number below.
+				series: {
+				  0: {targetAxisIndex: 0},
+				  1: {targetAxisIndex: 1}
+				},
+				vAxes: {
+				  // Adds titles to each axis.
+				  0: {title: 'Temps (Celsius)'},
+				  1: {title: 'Humidity'}
+			}
+			  };
+
+			  // Instantiate and draw our chart, passing in some options.
+			  var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+			  chart.draw(view1, options);
+			  banner = new String();
+			  banner = banner.concat('<font size="7" face="arial, helvetica" color="#0000ff">Measured at: ', data.getValue(0, 0));
+			  banner = banner.concat('<br/>Temperature: ', data.getValue(0, 1) ," &deg;C</font>");
+
+			  document.getElementById('cur_div').innerHTML = banner;
+			  document.getElementById('cur_div').innerHTML = banner;
+
+			// Heap trend
+			  options = {
+				title: 'Heap',
+				legend: { position: 'bottom' },
+			width: 800,
+			hAxis: {direction: -1},
+			height: 320,
+				// Gives each series an axis that matches the vAxes number below.
+				series: {
+				  2: {targetAxisIndex: 0},
+				},
+				vAxes: {
+				  // Adds titles to each axis.
+				  0: {title: 'Heap'},
+			}
+			  };
+			  var chart2 = new google.visualization.LineChart(document.getElementById('heap_chart_div'));
+			  chart2.draw(view2, options);
+
+
+		}
+	  });	
           
-      // Create our data table out of JSON data loaded from server.
-     // google.visualization.Query("getData2.php").send(function(a){jsonData = a.getDataTable()});
-      var data = new google.visualization.DataTable(jsonData, 0.6);
-
-      var view1 = new google.visualization.DataView(data);
-      view1.hideColumns([3]);
-      var view2 = new google.visualization.DataView(data);
-      view2.hideColumns([1,2]);
-      
-      var options = {
-        title: 'Sensor Data (Beta)',
-        legend: { position: 'bottom' },
-	width: 800,
-	hAxis: {direction: -1},
-	height: 320,
-        // Gives each series an axis that matches the vAxes number below.
-        series: {
-          0: {targetAxisIndex: 0},
-          1: {targetAxisIndex: 1}
-        },
-        vAxes: {
-          // Adds titles to each axis.
-          0: {title: 'Temps (Celsius)'},
-          1: {title: 'Humidity'}
-	}
-      };
-
-      // Instantiate and draw our chart, passing in some options.
-      var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
-      chart.draw(view1, options);
-      banner = new String();
-      banner = banner.concat('<font size="7" face="arial, helvetica" color="#0000ff">Measured at: ', data.getValue(0, 0));
-      banner = banner.concat('<br/>Temperature: ', data.getValue(0, 1) ," &deg;C</font>");
-
-      document.getElementById('cur_div').innerHTML = banner;
-      document.getElementById('cur_div').innerHTML = banner;
-
-	// Heap trend
-      options = {
-        title: 'Heap',
-        legend: { position: 'bottom' },
-	width: 800,
-	hAxis: {direction: -1},
-	height: 320,
-        // Gives each series an axis that matches the vAxes number below.
-        series: {
-          2: {targetAxisIndex: 0},
-        },
-        vAxes: {
-          // Adds titles to each axis.
-          0: {title: 'Heap'},
-	}
-      };
-      var chart2 = new google.visualization.LineChart(document.getElementById('heap_chart_div'));
-      chart2.draw(view2, options);
-
     }
 
     </script>
@@ -111,6 +119,7 @@
 	</tr>
 	</table>
 <script>
+
 window.addEventListener('load', ()=>{
   if('serviceWorker' in navigator){
     try {
@@ -121,6 +130,10 @@ window.addEventListener('load', ()=>{
     }
   }
   });
+  
+  var timer = setInterval( function() {
+    drawChart();
+}, 300000);
 </script>
   </body>
 </html>
