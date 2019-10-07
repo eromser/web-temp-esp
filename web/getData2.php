@@ -7,7 +7,7 @@ include 'db.php';
 
   $sqlq = "SELECT DATE_FORMAT(`logdate`, '%H:%i') AS time, temperature, humidity, heap
 		FROM  `DataTable` 
-		WHERE DATE( logdate ) = CURDATE( )   order by id desc limit 100";
+		WHERE DATE( logdate ) = DATE (NOW( ))   order by id desc limit 100";
 
   // Create connection
   $conn = new mysqli($servername, $username, $password, $dbname);
@@ -16,7 +16,7 @@ include 'db.php';
     die("Connection failed: " . $conn->connect_error);
   }
 
-  mysqli_query( $conn , "SET timezone = '+3:00'" );
+  mysqli_query( $conn , "SET time_zone = '+3:00'" );
   $result = mysqli_query( $conn , $sqlq );
 
 
@@ -26,9 +26,7 @@ $string = '{
   if ( $i > 0 ) {
     while($row = mysqli_fetch_array($result)) {
     	$string .= '{"c":[{"v":"'. $row['time'] .'"},{"v":'. $row['temperature'] .'},{"v":'. $row['humidity'] .'},{"v":'. $row['heap'] .'}]}';
-	if (--$i > 0) {
-            $string .= ',';
-        }
+	if (--$i > 0) $string .= ',';
     }
   }
   
