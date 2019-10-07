@@ -1,0 +1,21 @@
+{
+  "name": "Web Temperature from ESP8266",
+  "short_name": "WebTempESP",
+  "theme_color": "#d36060",
+  "background_color": "#f08e8e",
+  "display": "standalone",
+  "start_url": ".",
+  "icons": [
+    {
+      "src": "Icon-192px.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "Icon-512px.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "splash_pages": null
+}

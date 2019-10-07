@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>24H Temperature and humidity</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="refresh" content="300">
     <!--Load the AJAX API-->
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <!--script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script-->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <!--script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script-->
+
     <script type="text/javascript">
     
     // Load the Visualization API and the piechart package.
@@ -15,8 +19,7 @@
     google.charts.setOnLoadCallback(drawChart);
       
     function drawChart() {
-      var jsonData = $.ajax({
-          url: "getData2.php",
+      var jsonData = $.ajax("getData2.php",{
           dataType: "json",
           async: false
           }).responseText;
@@ -83,10 +86,11 @@
   </head>
 
   <body>
+	<noscript>    This page requires you to have the Javascript enabled.</noscript>
 	<table>
 	<tr>
 	  <td>
-	    <a href="http://www.wunderground.com/weatherstation/WXDailyHistory.asp?ID=IMOSKVA795"><img src="http://banners.wunderground.com/cgi-bin/banner/ban/wxBanner?bannertype=pws250_metric&weatherstationcount=IMOSKVA795" width="250" height="150" border="0" alt="Weather Underground PWS IMOSKVA795" /></a>
+	    <!--a href="https://www.wunderground.com/weatherstation/WXDailyHistory.asp?ID=IMOSCO13"><img src="https://banners.wunderground.com/cgi-bin/banner/ban/wxBanner?bannertype=pws250_metric&weatherstationcount=IMOSCO13" width="250" height="150" border="0" alt="Weather Underground PWS IMOSCO13" /></a-->
 	  </td>
           <td>
   	    <!--Div that will hold the text-->
@@ -106,5 +110,17 @@
 	  </td>
 	</tr>
 	</table>
+<script>
+window.addEventListener('load', ()=>{
+  if('serviceWorker' in navigator){
+    try {
+      navigator.serviceWorker.register('serviceWorker.js');
+      console.log("Service Worker Registered");
+    } catch (error) {
+      console.log("Service Worker Registration Failed");
+    }
+  }
+  });
+</script>
   </body>
 </html>
