@@ -26,7 +26,10 @@ $string = '{
   if ( $i > 0 ) {
     while($row = mysqli_fetch_array($result)) {
     	$string .= '{"c":[{"v":"'. $row['time'] .'"},{"v":'. $row['temperature'] .'},{"v":'. $row['humidity'] .'},{"v":'. $row['heap'] .'}]}';
-	if (--$i > 0) $string .= ',';
+    	if (--$i > 0) {
+    	    $string .= ',';
+    	}
+    	}
     }
   }
   
